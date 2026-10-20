@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, Audio, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 
 export const CryptoVideo: React.FC = () => {
   const frame = useCurrentFrame();
@@ -73,18 +73,7 @@ export const CryptoVideo: React.FC = () => {
         transform: `translate(${shake}px, ${shake * 0.5}px)`,
       }}
     >
-      <Audio
-        src="https://actions.google.com/sounds/v1/ambiences/outdoor_battle_field.ogg"
-        volume={0.35}
-      />
-
-      {sceneFrame < 5 && (
-        <Audio
-          src="https://actions.google.com/sounds/v1/impacts/cinematic_boom.ogg"
-          volume={0.8}
-        />
-      )}
-
+      {/* Fiery War Background Aura */}
       <div
         style={{
           position: 'absolute',
@@ -99,6 +88,7 @@ export const CryptoVideo: React.FC = () => {
         }}
       />
 
+      {/* Main Container */}
       <div
         style={{
           display: 'flex',
@@ -111,6 +101,7 @@ export const CryptoVideo: React.FC = () => {
           boxSizing: 'border-box',
         }}
       >
+        {/* Top Battle Phase Badge */}
         <div
           style={{
             transform: `scale(${scale})`,
@@ -129,6 +120,7 @@ export const CryptoVideo: React.FC = () => {
           {current.badge}
         </div>
 
+        {/* Dynamic Animated Visual Arena */}
         <div
           style={{
             transform: `scale(${scale})`,
@@ -238,6 +230,7 @@ export const CryptoVideo: React.FC = () => {
           )}
         </div>
 
+        {/* Telugu Dialogue Narration Box */}
         <div
           style={{
             transform: `scale(${scale})`,
@@ -275,6 +268,7 @@ export const CryptoVideo: React.FC = () => {
           </div>
         </div>
 
+        {/* Footer Banner */}
         <div
           style={{
             fontSize: '26px',
@@ -290,4 +284,4 @@ export const CryptoVideo: React.FC = () => {
     </AbsoluteFill>
   );
 };
-            
+        
