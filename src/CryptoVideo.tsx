@@ -1,53 +1,63 @@
 import React from 'react';
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Audio, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 
 export const CryptoVideo: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const sceneLength = fps * 9; // 9 seconds per scene
+  const sceneLength = fps * 8; // 8 seconds per scene (Total 40s)
   const sceneIndex = Math.min(Math.floor(frame / sceneLength), 4);
   const sceneFrame = frame % sceneLength;
 
-  const popAnim = spring({ frame: sceneFrame, fps, config: { damping: 10, mass: 0.6 } });
-  const scale = interpolate(popAnim, [0, 1], [0.8, 1]);
+  const popAnim = spring({ frame: sceneFrame, fps, config: { damping: 11, mass: 0.5 } });
+  const scale = interpolate(popAnim, [0, 1], [0.85, 1]);
   const opacity = interpolate(popAnim, [0, 1], [0, 1]);
+
+  const arrowX = interpolate(sceneFrame, [0, fps * 2], [-300, 300], {
+    extrapolateRight: 'clamp',
+  });
+  const shake = Math.sin(frame * 0.8) * (sceneIndex === 2 || sceneIndex === 3 ? 12 : 3);
 
   const scenes = [
     {
-      badge: '⚠️ 90% TRADERS FAIL',
-      badgeColor: '#ff3366',
-      title: 'WHY 90% LOSE?',
-      desc: 'Market lo strategy kante ekkuva RISK MANAGEMENT leka potharu!',
-      visualType: 'loss_stat',
+      badge: '🏹 YUDDHA ARAMBHAM 👹',
+      badgeColor: '#ff9900',
+      speaker: 'NARRATION',
+      dialogue: '“Lanka koti sena madyalo... Kodanda Ramudu, Dashakanta Ravana mukha-mukhi!”',
+      visual: 'faceoff',
+      bgGlow: '#ff4400',
     },
     {
-      badge: '🛡️ GOLDEN RULE 1',
-      badgeColor: '#00ff88',
-      title: '2% TO 3% RISK',
-      desc: 'Capital entha unna, single trade lo max 2-3% kante ekkuva risk vaddhu.',
-      visualType: 'risk_card',
+      badge: '⚡ RAVANA GARJANA ⚡',
+      badgeColor: '#ff1144',
+      speaker: 'RAVANA DIALOGUE',
+      dialogue: '“Nara manavudaa! Naa Chandrahasa khadgam mundhu thala vanchuko!”',
+      visual: 'ravana_attack',
+      bgGlow: '#990022',
     },
     {
-      badge: '🛑 BIGGEST MISTAKE',
-      badgeColor: '#ff0055',
-      title: 'NO STOP LOSS',
-      desc: 'Malli lesthundhi ani aagithe, motham account zero aipothundhi!',
-      visualType: 'chart_dump',
+      badge: '🏹 SRI RAMA PRATIDHVANI 🏹',
+      badgeColor: '#00e5ff',
+      speaker: 'SRI RAMA DIALOGUE',
+      dialogue: '“Ravana! Garvam vidichi yuddham cheyyi... Nee papam paripakvamaindhi!”',
+      visual: 'rama_aim',
+      bgGlow: '#0066aa',
     },
     {
-      badge: '🎯 1:2 RISK REWARD',
-      badgeColor: '#00d4ff',
-      title: '1:2 RATIO RULE',
-      desc: '50% trades loss aina kuda, nuvvu net profit lone untav.',
-      visualType: 'ratio_card',
+      badge: '🔱 BRAHMASTRA PRAHOGAM ☀️',
+      badgeColor: '#ffd700',
+      speaker: 'WAR PEAK',
+      dialogue: '“Agni jwalalatho suryudi thejassu la... Brahmastram sandhinchina Raghuramudu!”',
+      visual: 'brahmastra',
+      bgGlow: '#ffaa00',
     },
     {
-      badge: '👑 DISCIPLINE OVER FOMO',
-      badgeColor: '#ffbb00',
-      title: 'STICK TO RULES',
-      desc: 'Emotions tho kadhu, strict system tho trade cheyyi!',
-      visualType: 'profit_chart',
+      badge: '🚩 DHARMA VIJAYAM 🚩',
+      badgeColor: '#ff7700',
+      speaker: 'FINAL VERDICT',
+      dialogue: '“Adharmam padipoyindhi... Jagathulo malli Dharmam nelakonnadhi! JAI SRI RAM!”',
+      visual: 'victory',
+      bgGlow: '#ff5500',
     },
   ];
 
@@ -56,35 +66,36 @@ export const CryptoVideo: React.FC = () => {
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: '#07090e',
+        backgroundColor: '#050304',
         color: '#ffffff',
         fontFamily: 'system-ui, -apple-system, sans-serif',
         overflow: 'hidden',
+        transform: `translate(${shake}px, ${shake * 0.5}px)`,
       }}
     >
-      {/* Background Glow */}
-      <div
-        style={{
-          position: 'absolute',
-          width: '700px',
-          height: '700px',
-          borderRadius: '50%',
-          background: `radial-gradient(circle, ${current.badgeColor}22 0%, transparent 70%)`,
-          top: '20%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          filter: 'blur(60px)',
-        }}
+      <Audio
+        src="https://actions.google.com/sounds/v1/ambiences/outdoor_battle_field.ogg"
+        volume={0.35}
       />
 
-      {/* Grid Pattern */}
+      {sceneFrame < 5 && (
+        <Audio
+          src="https://actions.google.com/sounds/v1/impacts/cinematic_boom.ogg"
+          volume={0.8}
+        />
+      )}
+
       <div
         style={{
           position: 'absolute',
-          inset: 0,
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+          width: '800px',
+          height: '800px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${current.bgGlow}44 0%, transparent 70%)`,
+          top: '25%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          filter: 'blur(80px)',
         }}
       />
 
@@ -95,210 +106,188 @@ export const CryptoVideo: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           height: '100%',
-          padding: '120px 60px',
+          padding: '110px 50px',
           zIndex: 10,
           boxSizing: 'border-box',
         }}
       >
-        {/* Top Badge */}
         <div
           style={{
             transform: `scale(${scale})`,
             opacity,
-            background: 'rgba(255,255,255,0.05)',
+            background: 'rgba(255, 255, 255, 0.08)',
             border: `2px solid ${current.badgeColor}`,
-            padding: '16px 40px',
+            padding: '16px 42px',
             borderRadius: '100px',
-            fontSize: '30px',
+            fontSize: '32px',
             fontWeight: 800,
             color: current.badgeColor,
-            boxShadow: `0 0 30px ${current.badgeColor}33`,
+            boxShadow: `0 0 35px ${current.badgeColor}66`,
             letterSpacing: '2px',
           }}
         >
           {current.badge}
         </div>
 
-        {/* Dynamic Motion Graphic Visual */}
         <div
           style={{
             transform: `scale(${scale})`,
             opacity,
             width: '100%',
+            height: '520px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '450px',
+            position: 'relative',
           }}
         >
-          {current.visualType === 'loss_stat' && (
-            <div
-              style={{
-                width: '700px',
-                padding: '50px',
-                borderRadius: '35px',
-                background: 'rgba(255, 51, 102, 0.08)',
-                border: '2px solid rgba(255, 51, 102, 0.3)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
-              }}
-            >
-              <div style={{ fontSize: '130px', fontWeight: 900, color: '#ff3366' }}>90%</div>
-              <div style={{ fontSize: '36px', fontWeight: 700, color: '#ffffff', letterSpacing: '3px' }}>
-                TRADERS GET WIPED OUT
+          {current.visual === 'faceoff' && (
+            <div style={{ display: 'flex', gap: '80px', alignItems: 'center' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '140px', filter: 'drop-shadow(0 0 25px #00e5ff)' }}>🏹</div>
+                <div style={{ fontSize: '32px', fontWeight: 800, color: '#00e5ff' }}>SRI RAMA</div>
+              </div>
+              <div style={{ fontSize: '70px', fontWeight: 900, color: '#ff1144' }}>VS</div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '140px', filter: 'drop-shadow(0 0 25px #ff1144)' }}>👹</div>
+                <div style={{ fontSize: '32px', fontWeight: 800, color: '#ff1144' }}>RAVANA</div>
               </div>
             </div>
           )}
 
-          {current.visualType === 'risk_card' && (
-            <div
-              style={{
-                width: '750px',
-                padding: '45px',
-                borderRadius: '35px',
-                background: 'rgba(0, 255, 136, 0.08)',
-                border: '2px solid rgba(0, 255, 136, 0.3)',
-                display: 'flex',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}
-            >
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '28px', color: '#94a3b8' }}>CAPITAL</div>
-                <div style={{ fontSize: '65px', fontWeight: 900, color: '#ffffff' }}>$100</div>
+          {current.visual === 'ravana_attack' && (
+            <div style={{ textAlign: 'center', position: 'relative' }}>
+              <div style={{ fontSize: '160px', transform: `scale(${1 + Math.sin(frame / 3) * 0.1})` }}>
+                ⚔️ 👹 ⚔️
               </div>
-              <div style={{ fontSize: '50px', color: '#00ff88' }}>➡️</div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '28px', color: '#94a3b8' }}>MAX RISK</div>
-                <div style={{ fontSize: '65px', fontWeight: 900, color: '#00ff88' }}>$2 - $3</div>
+              <div
+                style={{
+                  fontSize: '44px',
+                  fontWeight: 900,
+                  color: '#ff1144',
+                  marginTop: '20px',
+                  textShadow: '0 0 20px #ff1144',
+                }}
+              >
+                CHANDRAHASA ASTRA ATTACK!
               </div>
             </div>
           )}
 
-          {current.visualType === 'chart_dump' && (
-            <div
-              style={{
-                width: '750px',
-                padding: '40px',
-                borderRadius: '35px',
-                background: 'rgba(255, 0, 85, 0.08)',
-                border: '2px solid rgba(255, 0, 85, 0.3)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '20px',
-              }}
-            >
-              <div style={{ fontSize: '40px', fontWeight: 800, color: '#ff0055' }}>🔻 LIQUIDATION ALERT</div>
-              {/* Candlestick dummy animation */}
-              <div style={{ display: 'flex', gap: '35px', alignItems: 'flex-end', height: '180px' }}>
-                <div style={{ width: '35px', height: '140px', background: '#00ff88', borderRadius: '6px' }} />
-                <div style={{ width: '35px', height: '110px', background: '#00ff88', borderRadius: '6px' }} />
-                <div style={{ width: '35px', height: '70px', background: '#ff0055', borderRadius: '6px' }} />
-                <div style={{ width: '35px', height: '160px', background: '#ff0055', borderRadius: '6px' }} />
+          {current.visual === 'rama_aim' && (
+            <div style={{ textAlign: 'center', position: 'relative' }}>
+              <div style={{ fontSize: '160px', transform: `translateX(${arrowX}px)` }}>
+                🏹 💨
+              </div>
+              <div
+                style={{
+                  fontSize: '44px',
+                  fontWeight: 900,
+                  color: '#00e5ff',
+                  marginTop: '20px',
+                  textShadow: '0 0 20px #00e5ff',
+                }}
+              >
+                DIVINE COUNTER STRIKE!
               </div>
             </div>
           )}
 
-          {current.visualType === 'ratio_card' && (
-            <div
-              style={{
-                width: '750px',
-                padding: '45px',
-                borderRadius: '35px',
-                background: 'rgba(0, 212, 255, 0.08)',
-                border: '2px solid rgba(0, 212, 255, 0.3)',
-                display: 'flex',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}
-            >
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '26px', color: '#ff0055', fontWeight: 700 }}>STOP LOSS</div>
-                <div style={{ fontSize: '75px', fontWeight: 900, color: '#ff0055' }}>-1%</div>
+          {current.visual === 'brahmastra' && (
+            <div style={{ textAlign: 'center' }}>
+              <div
+                style={{
+                  fontSize: '180px',
+                  filter: 'drop-shadow(0 0 40px #ffd700)',
+                  transform: `scale(${1 + Math.sin(frame / 2) * 0.15})`,
+                }}
+              >
+                ☀️ 🔱 ☀️
               </div>
-              <div style={{ fontSize: '60px', fontWeight: 900, color: '#ffffff' }}>:</div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '26px', color: '#00ff88', fontWeight: 700 }}>TARGET</div>
-                <div style={{ fontSize: '75px', fontWeight: 900, color: '#00ff88' }}>+2%</div>
+              <div
+                style={{
+                  fontSize: '48px',
+                  fontWeight: 900,
+                  color: '#ffd700',
+                  marginTop: '20px',
+                  textShadow: '0 0 30px #ffd700',
+                }}
+              >
+                THE BRAHMASTRA FIRE!
               </div>
             </div>
           )}
 
-          {current.visualType === 'profit_chart' && (
-            <div
-              style={{
-                width: '750px',
-                padding: '50px',
-                borderRadius: '35px',
-                background: 'rgba(255, 187, 0, 0.08)',
-                border: '2px solid rgba(255, 187, 0, 0.3)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <div style={{ fontSize: '100px' }}>📈</div>
-              <div style={{ fontSize: '50px', fontWeight: 900, color: '#ffbb00', marginTop: '20px' }}>
-                CONSISTENT PROFITS
+          {current.visual === 'victory' && (
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '170px', filter: 'drop-shadow(0 0 40px #ff7700)' }}>
+                🚩 🕉️ 🚩
+              </div>
+              <div
+                style={{
+                  fontSize: '52px',
+                  fontWeight: 900,
+                  color: '#ff7700',
+                  marginTop: '20px',
+                  textShadow: '0 0 30px #ff7700',
+                }}
+              >
+                VICTORY OF DHARMA!
               </div>
             </div>
           )}
         </div>
 
-        {/* Content Box */}
         <div
           style={{
             transform: `scale(${scale})`,
             opacity,
             width: '100%',
-            maxWidth: '900px',
-            background: 'rgba(15, 23, 42, 0.85)',
-            border: '2px solid rgba(255, 255, 255, 0.1)',
+            maxWidth: '920px',
+            background: 'rgba(18, 12, 14, 0.92)',
+            border: `2px solid ${current.badgeColor}88`,
             borderRadius: '35px',
-            padding: '50px 40px',
+            padding: '45px 35px',
             textAlign: 'center',
-            boxShadow: '0 30px 60px rgba(0,0,0,0.6)',
+            boxShadow: `0 25px 60px rgba(0,0,0,0.8), 0 0 30px ${current.badgeColor}22`,
           }}
         >
           <div
             style={{
-              fontSize: '62px',
-              fontWeight: 900,
-              color: '#ffffff',
-              marginBottom: '25px',
-              letterSpacing: '-1px',
+              fontSize: '30px',
+              fontWeight: 800,
+              color: current.badgeColor,
+              marginBottom: '15px',
+              letterSpacing: '2px',
             }}
           >
-            {current.title}
+            {current.speaker}
           </div>
           <div
             style={{
-              fontSize: '34px',
+              fontSize: '36px',
               lineHeight: 1.6,
-              color: '#cbd5e1',
-              fontWeight: 500,
+              color: '#ffffff',
+              fontWeight: 700,
             }}
           >
-            {current.desc}
+            {current.dialogue}
           </div>
         </div>
 
-        {/* Footer Label */}
         <div
           style={{
-            fontSize: '24px',
-            color: '#64748b',
-            letterSpacing: '3px',
-            fontWeight: 700,
+            fontSize: '26px',
+            color: '#e2e8f0',
+            letterSpacing: '4px',
+            fontWeight: 800,
+            textShadow: '0 0 10px rgba(255,255,255,0.4)',
           }}
         >
-          CRYPTO RISK MANAGEMENT • FOLLOW FOR MORE
+          ⚔️ RAMAYANA EPICS • LIKE & FOLLOW ⚔️
         </div>
       </div>
     </AbsoluteFill>
   );
 };
-        
+            
