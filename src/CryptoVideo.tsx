@@ -5,146 +5,300 @@ export const CryptoVideo: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const titleProgress = spring({ frame, fps, config: { damping: 12 } });
-  const titleY = interpolate(titleProgress, [0, 1], [60, 0]);
+  const sceneLength = fps * 9; // 9 seconds per scene
+  const sceneIndex = Math.min(Math.floor(frame / sceneLength), 4);
+  const sceneFrame = frame % sceneLength;
 
-  const sceneIndex = Math.floor(frame / (fps * 9));
+  const popAnim = spring({ frame: sceneFrame, fps, config: { damping: 10, mass: 0.6 } });
+  const scale = interpolate(popAnim, [0, 1], [0.8, 1]);
+  const opacity = interpolate(popAnim, [0, 1], [0, 1]);
 
   const scenes = [
     {
-      badge: 'CRYPTO TRADING SECRET',
-      title: '90% TRADERS LOSS',
-      highlight: 'WHY?',
-      desc: 'Loss avvadaniki kaaranam setup lekapovadam kadhu... Proper Risk Management lekapovadame!',
-      accent: '#ff4d4d',
+      badge: '⚠️ 90% TRADERS FAIL',
+      badgeColor: '#ff3366',
+      title: 'WHY 90% LOSE?',
+      desc: 'Market lo strategy kante ekkuva RISK MANAGEMENT leka potharu!',
+      visualType: 'loss_stat',
     },
     {
-      badge: 'RULE 1: CAPITAL RISK',
-      title: 'MAX 2% TO 3% RISK',
-      highlight: 'PER TRADE',
-      desc: 'Account lo $100 unte, okka trade lo $2 to $3 kante ekkuva risk cheyakudadhu.',
-      accent: '#00e676',
+      badge: '🛡️ GOLDEN RULE 1',
+      badgeColor: '#00ff88',
+      title: '2% TO 3% RISK',
+      desc: 'Capital entha unna, single trade lo max 2-3% kante ekkuva risk vaddhu.',
+      visualType: 'risk_card',
     },
     {
-      badge: 'BIGGEST MISTAKE',
-      title: 'NO STOP-LOSS',
-      highlight: 'ACCOUNT WASHED',
-      desc: "Market padinappudu malli lesthundhi ani aagithe, motham capital wipe out aipothundhi!",
-      accent: '#ff5252',
+      badge: '🛑 BIGGEST MISTAKE',
+      badgeColor: '#ff0055',
+      title: 'NO STOP LOSS',
+      desc: 'Malli lesthundhi ani aagithe, motham account zero aipothundhi!',
+      visualType: 'chart_dump',
     },
     {
-      badge: 'THE GOLDEN RULE',
-      title: '1:2 RISK REWARD',
-      highlight: 'DISCIPLINE',
-      desc: 'Trade thesukune munde Stop-loss and Target fix cheyyi. 50% trades win aina nuvvu super profit lo untav!',
-      accent: '#00e5ff',
+      badge: '🎯 1:2 RISK REWARD',
+      badgeColor: '#00d4ff',
+      title: '1:2 RATIO RULE',
+      desc: '50% trades loss aina kuda, nuvvu net profit lone untav.',
+      visualType: 'ratio_card',
     },
     {
-      badge: 'FINAL ADVICE',
-      title: 'NO EMOTIONS',
-      highlight: 'TRADE DISCIPLINE',
-      desc: 'Emotions pakkana petti, rules tho trade cheyyi. Consistency is king!',
-      accent: '#ffd700',
+      badge: '👑 DISCIPLINE OVER FOMO',
+      badgeColor: '#ffbb00',
+      title: 'STICK TO RULES',
+      desc: 'Emotions tho kadhu, strict system tho trade cheyyi!',
+      visualType: 'profit_chart',
     },
   ];
 
-  const current = scenes[Math.min(sceneIndex, scenes.length - 1)];
+  const current = scenes[sceneIndex];
 
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: '#0a0e17',
+        backgroundColor: '#07090e',
         color: '#ffffff',
-        fontFamily: 'sans-serif',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '60px',
-        textAlign: 'center',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        overflow: 'hidden',
       }}
     >
+      {/* Background Glow */}
       <div
         style={{
           position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          width: '700px',
+          height: '700px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${current.badgeColor}22 0%, transparent 70%)`,
+          top: '20%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          filter: 'blur(60px)',
+        }}
+      />
+
+      {/* Grid Pattern */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
           backgroundImage:
-            'radial-gradient(circle at 50% 30%, rgba(0, 230, 118, 0.12) 0%, transparent 60%), radial-gradient(circle at 50% 80%, rgba(0, 229, 255, 0.08) 0%, transparent 50%)',
-          pointerEvents: 'none',
+            'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
         }}
       />
 
       <div
         style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          border: `2px solid ${current.accent}`,
-          padding: '16px 36px',
-          borderRadius: '40px',
-          fontSize: '28px',
-          fontWeight: 'bold',
-          letterSpacing: '2px',
-          color: current.accent,
-          marginBottom: '50px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '100%',
+          padding: '120px 60px',
+          zIndex: 10,
+          boxSizing: 'border-box',
         }}
       >
-        {current.badge}
-      </div>
+        {/* Top Badge */}
+        <div
+          style={{
+            transform: `scale(${scale})`,
+            opacity,
+            background: 'rgba(255,255,255,0.05)',
+            border: `2px solid ${current.badgeColor}`,
+            padding: '16px 40px',
+            borderRadius: '100px',
+            fontSize: '30px',
+            fontWeight: 800,
+            color: current.badgeColor,
+            boxShadow: `0 0 30px ${current.badgeColor}33`,
+            letterSpacing: '2px',
+          }}
+        >
+          {current.badge}
+        </div>
 
-      <div
-        style={{
-          transform: `translateY(${titleY}px)`,
-          fontSize: '70px',
-          fontWeight: '900',
-          lineHeight: '1.2',
-          marginBottom: '20px',
-        }}
-      >
-        {current.title}
-      </div>
+        {/* Dynamic Motion Graphic Visual */}
+        <div
+          style={{
+            transform: `scale(${scale})`,
+            opacity,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '450px',
+          }}
+        >
+          {current.visualType === 'loss_stat' && (
+            <div
+              style={{
+                width: '700px',
+                padding: '50px',
+                borderRadius: '35px',
+                background: 'rgba(255, 51, 102, 0.08)',
+                border: '2px solid rgba(255, 51, 102, 0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+              }}
+            >
+              <div style={{ fontSize: '130px', fontWeight: 900, color: '#ff3366' }}>90%</div>
+              <div style={{ fontSize: '36px', fontWeight: 700, color: '#ffffff', letterSpacing: '3px' }}>
+                TRADERS GET WIPED OUT
+              </div>
+            </div>
+          )}
 
-      <div
-        style={{
-          fontSize: '56px',
-          fontWeight: '900',
-          color: current.accent,
-          textShadow: `0 0 25px ${current.accent}66`,
-          marginBottom: '50px',
-        }}
-      >
-        {current.highlight}
-      </div>
+          {current.visualType === 'risk_card' && (
+            <div
+              style={{
+                width: '750px',
+                padding: '45px',
+                borderRadius: '35px',
+                background: 'rgba(0, 255, 136, 0.08)',
+                border: '2px solid rgba(0, 255, 136, 0.3)',
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', color: '#94a3b8' }}>CAPITAL</div>
+                <div style={{ fontSize: '65px', fontWeight: 900, color: '#ffffff' }}>$100</div>
+              </div>
+              <div style={{ fontSize: '50px', color: '#00ff88' }}>➡️</div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', color: '#94a3b8' }}>MAX RISK</div>
+                <div style={{ fontSize: '65px', fontWeight: 900, color: '#00ff88' }}>$2 - $3</div>
+              </div>
+            </div>
+          )}
 
-      <div
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.85)',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          padding: '40px',
-          borderRadius: '28px',
-          fontSize: '34px',
-          lineHeight: '1.6',
-          maxWidth: '850px',
-          color: '#cbd5e1',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-        }}
-      >
-        {current.desc}
-      </div>
+          {current.visualType === 'chart_dump' && (
+            <div
+              style={{
+                width: '750px',
+                padding: '40px',
+                borderRadius: '35px',
+                background: 'rgba(255, 0, 85, 0.08)',
+                border: '2px solid rgba(255, 0, 85, 0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '20px',
+              }}
+            >
+              <div style={{ fontSize: '40px', fontWeight: 800, color: '#ff0055' }}>🔻 LIQUIDATION ALERT</div>
+              {/* Candlestick dummy animation */}
+              <div style={{ display: 'flex', gap: '35px', alignItems: 'flex-end', height: '180px' }}>
+                <div style={{ width: '35px', height: '140px', background: '#00ff88', borderRadius: '6px' }} />
+                <div style={{ width: '35px', height: '110px', background: '#00ff88', borderRadius: '6px' }} />
+                <div style={{ width: '35px', height: '70px', background: '#ff0055', borderRadius: '6px' }} />
+                <div style={{ width: '35px', height: '160px', background: '#ff0055', borderRadius: '6px' }} />
+              </div>
+            </div>
+          )}
 
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '80px',
-          fontSize: '24px',
-          color: '#64748b',
-          letterSpacing: '1px',
-        }}
-      >
-        CRYPTO TRADING RULES • FOLLOW FOR MORE
+          {current.visualType === 'ratio_card' && (
+            <div
+              style={{
+                width: '750px',
+                padding: '45px',
+                borderRadius: '35px',
+                background: 'rgba(0, 212, 255, 0.08)',
+                border: '2px solid rgba(0, 212, 255, 0.3)',
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '26px', color: '#ff0055', fontWeight: 700 }}>STOP LOSS</div>
+                <div style={{ fontSize: '75px', fontWeight: 900, color: '#ff0055' }}>-1%</div>
+              </div>
+              <div style={{ fontSize: '60px', fontWeight: 900, color: '#ffffff' }}>:</div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '26px', color: '#00ff88', fontWeight: 700 }}>TARGET</div>
+                <div style={{ fontSize: '75px', fontWeight: 900, color: '#00ff88' }}>+2%</div>
+              </div>
+            </div>
+          )}
+
+          {current.visualType === 'profit_chart' && (
+            <div
+              style={{
+                width: '750px',
+                padding: '50px',
+                borderRadius: '35px',
+                background: 'rgba(255, 187, 0, 0.08)',
+                border: '2px solid rgba(255, 187, 0, 0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{ fontSize: '100px' }}>📈</div>
+              <div style={{ fontSize: '50px', fontWeight: 900, color: '#ffbb00', marginTop: '20px' }}>
+                CONSISTENT PROFITS
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Content Box */}
+        <div
+          style={{
+            transform: `scale(${scale})`,
+            opacity,
+            width: '100%',
+            maxWidth: '900px',
+            background: 'rgba(15, 23, 42, 0.85)',
+            border: '2px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '35px',
+            padding: '50px 40px',
+            textAlign: 'center',
+            boxShadow: '0 30px 60px rgba(0,0,0,0.6)',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '62px',
+              fontWeight: 900,
+              color: '#ffffff',
+              marginBottom: '25px',
+              letterSpacing: '-1px',
+            }}
+          >
+            {current.title}
+          </div>
+          <div
+            style={{
+              fontSize: '34px',
+              lineHeight: 1.6,
+              color: '#cbd5e1',
+              fontWeight: 500,
+            }}
+          >
+            {current.desc}
+          </div>
+        </div>
+
+        {/* Footer Label */}
+        <div
+          style={{
+            fontSize: '24px',
+            color: '#64748b',
+            letterSpacing: '3px',
+            fontWeight: 700,
+          }}
+        >
+          CRYPTO RISK MANAGEMENT • FOLLOW FOR MORE
+        </div>
       </div>
     </AbsoluteFill>
   );
 };
-          
+        
